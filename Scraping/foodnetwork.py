@@ -1,6 +1,7 @@
 import os
 import time
 import requests
+import pandas as pd
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 import re
@@ -8,6 +9,7 @@ import re
 def extract_recipe(browser, url, first_time):
     url = 'http:' + url
     browser.get(url)
+    print(url)
     time.sleep(1)
 
     if first_time:
@@ -25,22 +27,33 @@ def extract_recipe(browser, url, first_time):
     recipe_html = browser.page_source
     r_soup = BeautifulSoup(recipe_html, 'html.parser')
 
-    try:
-        name = r_soup.find('span', attrs={"class": "o-AssetTitle__a-HeadlineText"})
-        r_time = r_soup.find('span', attrs={"class": "o-RecipeInfo__a-Description m-RecipeInfo__a-Description--Total"})
-        ingredients = r_soup.find('div', attrs={"class": "o-Ingredients__m-Body"})
-        comments = r_soup.find('div', attrs={"class": "comments loaded"})
+    
+    name = r_soup.find('span', attrs={"class": "o-AssetTitle__a-HeadlineText"})
+    cook_time = r_soup.find('span', attrs={"class": "o-RecipeInfo__a-Description m-RecipeInfo__a-Description--Total"})
+    ingredients = r_soup.find_all('p', attrs={"class": "o-Ingredients__a-Ingredient"})
+    comment_section = r_soup.find('div', attrs={"class": "comments loaded"})
 
-        print('Name:', name)
-        print('Time:', r_time)
-        print('Ingredients:', str(ingredients.contents)[0:100])
-        print('Comments:', str(comments.contents)[0:100])
-    except:
-        with open(os.getcwd() + '/error_html.txt', 'w') as f:
-            f.write(str(recipe_html))
-            f.close()
+    items = []
+    i = 0
+    for ingr in r_soup.find_all('span', attrs={"class": "o-Ingredients__a-Ingredient--CheckboxLabel"}):
+        if i == 0:
+            i += 1
+            continue
+        items.append(str(ingr.get_text()).strip())
+        i += 1
 
-    return [name, r_time, ingredients, comments]
+    # 'div[data-asin="099655596X"]'
+    # 'div', {"data-level": "0"}
+
+    comments = []
+    for c in r_soup.find_all('div', {"data-level": "0"}):
+        c_soup = BeautifulSoup(str(c.contents), 'html.parser')
+        comment = c_soup.find('div', attrs={"class": "comment-body"})
+        if comment is None or len(comment) == 0:
+            continue
+        comments.append(str(comment.get_text()).strip())
+
+    return [name.get_text(), cook_time.get_text(), items, comments, url]
 
 
 def search_recipes(browser, item, num_pages):
@@ -66,20 +79,26 @@ def search_recipes(browser, item, num_pages):
         i += 1
             
     print('Num Recipes: ', len(links), ' Should be: ', total_links)
+    # print(links)
 
     data = []
+
+    cols = ['Name', 'Time', 'Ingredients', 'Comments', 'Link']
+    df = pd.DataFrame([['ABC', '10 minutes', 'Nothing', 'ABC 123', 'www.blah.com']], columns=cols)
 
     i = 0
     first = True
     for link in links:
-        if i > 1:
-            break
-        elif i > 0:
+        # if i > 1:
+        #     break
+        
+        if i > 0:
             first = False
 
         result = extract_recipe(browser, link, first)
-        data.append(result)
-        
+        recipe = pd.DataFrame([result], columns=cols)
+        df = pd.concat([df, recipe], axis=0)
+        df.to_csv('./recipes.csv', index = False, header=True)
         i += 1
 
     
