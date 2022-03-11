@@ -84,7 +84,7 @@ def search_recipes(browser, item, num_pages):
     data = []
 
     cols = ['Name', 'Time', 'Ingredients', 'Comments', 'Link']
-    df = pd.DataFrame([['ABC', '10 minutes', 'Nothing', 'ABC 123', 'www.blah.com']], columns=cols)
+    df = pd.DataFrame([['ABC', '10 minutes', 'Nothing', ['check', 'check', 'check'], 'www.blah.com']], columns=cols)
 
     i = 0
     first = True
