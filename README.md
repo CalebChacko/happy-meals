@@ -1,25 +1,27 @@
 # Recipe Recommendation using Sentiment Analysis
 ## Overview
 I love trying new recipes, expanding my horizon of tastes. However, sifting through recipes online can be difficult for a few reasons.
+
 1. There are many ads crowding the screen
 2. The ingredients to make the recipe are positioned at the bottom of the page
-3. Many recipes have reviewers who rate the recipe high, but only negative comments.
+3. Many recipes have reviewers who rate the recipe high, but contradict themself with only placing negative comments *(Comments usually hold more weight than the rating number)*
 
-Combining my interest for new foods and a desire to learn more about machine learning models, I decided to create _____ .
-This project uses a mixture of python, webscraping, and sentiment analysis through NLP. 
+Combining my interest for exploring new foods and a desire to learn more about machine learning models, I decided to create _____ .
 
-*The goal of this project is to design a streamlined process to make finding highly commented recipes more accessible.* 
+*The goal of this project is to design a streamlined process to make finding highly rated recipes more accessible.* 
+
+This project uses a mixture of webscraping and sentiment analysis through Natural Language Processing (NLP). At a high level, the Webdriver will extract details and comments of multiple recipes from [Food Network](https://www.foodnetwork.com/), given an input search keyword. After extracting the data, the NLP model will assess each comment and rate it between 1 and 5 stars based on text such as: 'Good', 'Great', or 'Amazing'. The average rating of all comments in a recipe is taken and the top average rating of all recipes will be selected. 
 
 ## 🛠 Installation
 **Pre-Requisite: Ensure you have Python 3.9 installed**
 
-First, clone the repo. Unzip the folder and open your favorite command terminal. Run the following commands:
+First, clone the repo, unzip the folder and open your favorite command terminal. Run the following commands:
 
 `python -m pip install virtualenv` : When using Python, it's best to create separate python environments for each project. This allows for easier package dependency.
 
 `python -m venv ./` : This command creates a virtual environment for this project. Ensure this command is run from the root directory
 
-`./Scripts/Activate` : Activates the virtual environment. If it successfuly activates, you will see `(sentiment-analysis-recipes)` on the left of the directory in your terminal. On Mac, this command is equivalent to `source /env/bin/activate`
+`./Scripts/Activate` : Activates the virtual environment. If it successfully activates, you will see `(sentiment-analysis-recipes)` on the left of the directory in your terminal. On Mac, this command is equivalent to `source /env/bin/activate`
 
 `pip install -r ./requirements.txt` : After activating the virtual env, the python packages can be installed for the project with this command.
 
@@ -59,9 +61,13 @@ From my `broccoli` search, the program found a recipe called `Broccoli and Green
  
 
 ## 💻 Algorithm Structure
+<img align='right' src="./assets/single_thread_workflow.png" width="250">
+
 The algorithm is split into two separate components:
 1. Scraping recipe information
 2. Rating recipes using NLP model
+
+
 
 ### Web Scrape Recipes
 For this project, I utilized recipes from [Food Network](https://www.foodnetwork.com/). I use Selenium to navigate the website and BeautifulSoup to parse the html. After extracting the input search query from `./Data/input.txt`, a Chrome Webdriver is instantiated and enters Food Network with the search field included. 
@@ -73,9 +79,10 @@ After collecting enough links, it iterates through each link to extract recipe d
 ### Rating Recipes
 The second component focuses on evaluating the comments of each recipe using Natural Language Processing (NLP). While I would like to design my NLP tool for this project, I began with using a pre-trained BERT model. In the setup script, this model is downloaded to the user's system. 
 
-**BERT**
-
-*Details about BERT*
+> **BERT** <img src="./assets/bert.png" width="15"/>
+> 
+> BERT stands for [**Bidirectional Encoder Representation from Transformers**](https://arxiv.org/pdf/1810.04805.pdf). This pre-trained model was 
+designed by Google in 2018. At a high level, BERT can identify sentence context to predict the current word in the sentence. For example, given "The quick brown fox jumps over the lazy _____", BERT would take the context of the sentence to determine which word would best fit in the blank. This has many applications including finding the sentiment of a sentence. A comment such as "The smell of the broccoli was putrid!" would be assessed as a negative phrase and would rated a 1. If it received a comment such as "This broccoli was delicious. Tasted like a mouthful of heaven", it would assess the phrase as positive and give it a 5 star rating.  
 
 The algorithm iterates through each recipe. Each comment from the recipe is then given to the model. Once all comments are evaluated, the average of the recipe comments is calculated. This continues for all recipes. At the end, the file is sorted by *rating* and then by *time*. This filter may be adjustable in a future update. 
 
@@ -89,8 +96,24 @@ I'm happy with the result of the project so far. It reliably outputs recipe ingr
 However, this project is not user-friendly. At this time, it requires programming experience to setup and run the program. This is acceptable as I wanted to ensure it operated properly first before giving it a user-friendly design.
  
 The next steps are to include:
-* Automated Installation Script
-* User Interface for Inputs and Outputs
-* Algorithm Optimization
-    * Concurrency Additions
-* Custom NLP Model
+
+**Automated Installation Script**
+
+Users can simply run an executable to setup the environment and model.
+
+**User Interface for Inputs and Outputs**
+
+Rather than opening text files, the project will open a simple GUI. Users will be able to update the input and view the output. Additional inputs will be added including number of recipes to scan and what property to sort by (i.e *Time* rather than *Rating*)
+
+**Parallelism Optimization**
+
+The program runs too slow for a user to access in a reasonable time. To streamline this process, the program can be restructured with multiple threads.
+
+<img src="./assets/parallel_workflow.png" width="400"/>
+
+As shown in the diagram above, the program still instantiates a single Webdriver. Rather than opening a recipe, extracting the html, then moving onto the next recipe, the program will open all the recipes and store the html for each recipe. Once all recipe HTML are stored, multiple threads will extract and rate the comments at the same time. This should reduce the runtime of the program significantly
+
+
+**Custom NLP Model**
+
+BERT is an extraordinary pre-trained model. However, I would like to practice training a model on unstructured data, as most of my experience has focused on structured data.
