@@ -4,7 +4,9 @@ This project is focused on utilizing Sentiment Analysis through natural language
 ## Overview
 I love trying new recipes, expanding my horizon of tastes. However, sifting through recipes online can be difficult for a few reasons.
 
-### TODO: Create tutorial to setup python environment
+1. There are many ads crowding the screen
+2. The ingredients to make the recipe are positioned at the bottom of the page
+3. Many recipes have reviewers who rate the recipe high, but contradict themself with only placing negative comments *(Comments usually hold more weight than the rating number)*
 
 Combining my interest for exploring new foods and a desire to learn more about machine learning models, I decided to create Happy Meals.
 
