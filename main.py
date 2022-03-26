@@ -1,8 +1,8 @@
 import os
 import pandas as pd
-from Scraping import scrape_tools as st
-from Scraping import foodnetwork as fn
-import rate_recipes as rr
+from Scrape import scrape_tools as st
+from Scrape import foodnetwork as fn
+from Rate import rate_recipes as rr
 from ast import literal_eval
 
 # SETUP
@@ -16,11 +16,6 @@ view_browser = False
 download_path = os.getcwd() + './Data/'
 
 browser = st.setup_browser(view_browser, download_path)
-
-# if view_browser:
-#     debug_url = '//www.foodnetwork.com/recipes/ellie-krieger/chicken-zucchini-alfredo-recipe-2104237'
-#     fn.extract_recipe(browser, debug_url, True)
-#     exit()
 
 # EXTRACT RECIPES
 fn.search_recipes(browser, user_search, 3)

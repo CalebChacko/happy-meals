@@ -23,11 +23,13 @@ First, clone the repo, unzip the folder and open your favorite command terminal.
 
 `python -m venv ./` : This command creates a virtual environment for this project. Ensure this command is run from the root directory
 
-`./Scripts/Activate` : Activates the virtual environment. If it successfully activates, you will see `(sentiment-analysis-recipes)` on the left of the directory in your terminal. On Mac, this command is equivalent to `source /env/bin/activate`
+`./Scripts/Activate` : Activates the virtual environment. If it successfully activates, you will see `(Happy Meals)` on the left of the directory in your terminal. On Mac, this command is equivalent to `source /env/bin/activate`
 
 `pip install -r ./requirements.txt` : After activating the virtual env, the python packages can be installed for the project with this command.
 
-These 4 commands should be sufficient to setup the project on a local computer.
+`python ./Models/model_setup.py` : This command builds the model used for sentiment analysis. It will be stored on your local machine. 
+
+These 5 commands should be sufficient to setup the project on a local computer.
 
 ## 📝 Instructions
 Running a recipe search is simple! 
