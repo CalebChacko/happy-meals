@@ -65,7 +65,7 @@ From my `broccoli` search, the program found a recipe called `Broccoli and Green
  
 
 ## 💻 Algorithm Structure
-<img align='right' src="./assets/single_thread_workflow.png" width="250">
+<img align='right' src="https://github.com/CalebChacko/happy-meals/blob/main/assets/single_thread_workflow.PNG" width="250">
 
 The algorithm is split into two separate components:
 1. Scraping recipe information
@@ -120,7 +120,7 @@ Rather than opening text files, the project will open a simple GUI. Users will b
 
 The program runs too slow for a user to access in a reasonable time. To streamline this process, the program can be restructured with multiple threads.
 
-<img src="./assets/parallel_workflow.png" width="400"/>
+<img src="https://github.com/CalebChacko/happy-meals/blob/main/assets/parallel_workflow.PNG" width="400"/>
 
 As shown in the diagram above, the program still instantiates a single Webdriver. Rather than opening a recipe, extracting the html, then moving onto the next recipe, the program will open all the recipes and store the html for each recipe. Once all recipe HTML are stored, multiple threads will extract and rate the comments at the same time. This should reduce the runtime of the program significantly
 
